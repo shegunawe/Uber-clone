@@ -20,11 +20,10 @@ export default function Home() {
           name: user.displayName,
           photoUrl: user.photoURL,
         })
+      } else {
+        setUser(null)
+        router.push('/')
       }
-      // else {
-      //   setUser(null)
-      //   router.push('/')
-      // }
     })
   }, [])
 
