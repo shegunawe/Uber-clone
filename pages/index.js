@@ -22,7 +22,7 @@ export default function Home() {
         })
       } else {
         setUser(null)
-        router.push('/')
+        router.push('/login')
       }
     })
   }, [])
