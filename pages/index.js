@@ -1,121 +1,60 @@
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import React, {useEffect} from 'react'
 import tw from "tailwind-styled-components";
-import mapboxgl from "!mapbox-gl";
-import Map from "../components/Map";
-import Link from 'next/link';
-import { signOut, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
-import { useRouter } from "next/router";
+import {useRouter} from 'next/router'
+import { signInWithPopup, onAuthStateChanged } from 'firebase/auth'
+import {auth, provider} from '../firebase'
+import Head from "next/head";
 
-export default function Home() {
-  const [user, setUser] = useState(null)
-  const router = useRouter()
+const Login = () => {
 
-  useEffect(() => { 
-    return onAuthStateChanged(auth, user => {
-      if (user) {
-        setUser({
-          name: user.displayName,
-          photoUrl: user.photoURL,
+    const router = useRouter()
+
+    useEffect(() => {
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                router.push('/home')
+            }
         })
-      } else {
-        setUser(null)
-        router.push('/login')
-      }
-    })
-  }, [])
+    }, [])
 
-  return (
-    <div>
-      <Head>
-        <title>Uber</title>
-        <meta name="description" content="Uber Next Clone" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Wrapper>
-        <Map />
-        <ActionItems>
-          <Header>
-            <UberLogo>Uber</UberLogo>
-            <Profile>
-              <Name>{user && user.name}</Name>
-              <UserImage
-                src={user && user.photoUrl}
-                onClick={() => signOut(auth)}
-              />
-            </Profile>
-          </Header>
-          <ActionButtons>
-            <Link href="/search">
-              <ActionButton>
-                <ActionButtonImage src="/3dcar.jpg" />
-                Ride
-              </ActionButton>
-            </Link>
-            <Link href="/search">
-              <ActionButton>
-                <ActionButtonImage src="/bike.jpg" />
-                2-Wheel
-              </ActionButton>
-            </Link>
-
-            <Link href="/search">
-              <ActionButton>
-                <ActionButtonImage src="/calendar.jfif" />
-                Reserve
-              </ActionButton>
-            </Link>
-          </ActionButtons>
-          <InputButton>Where to?</InputButton>
-        </ActionItems>
-      </Wrapper>
-    </div>
-  );
+    return (
+      <div>
+        <Head>
+          <title>Login</title>
+          <meta name="description" content="Uber Next Clone" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <Wrapper>
+          <UberLogo>Uber</UberLogo>
+          <Title>Log in to access your account</Title>
+          <Driver src="/uberdrive.png" />
+          <SignInButton onClick={() => signInWithPopup(auth, provider)}>
+            Sign in with google
+          </SignInButton>
+        </Wrapper>
+      </div>
+    );
 }
 
+export default Login
+
+
 const Wrapper = tw.div`
-  flex flex-col  h-screen
-`;
+    flex flex-col h-screen bg-gray-200 w-screen p-4
+`
 
-const ActionItems = tw.div`
-  flex-1 p-4
-`;
-
-const Header = tw.div`
-  flex justify-between items-center
+const SignInButton = tw.button`
+    bg-black text-center text-white py-4 mt-4 self-center w-full 
 `;
 
 const UberLogo = tw.div`
-  h-28 flex items-center text-4xl text-gray-900 font-semibold
+  h-28 flex items-center text-4xl text-gray-900 font-semibold self-start
 `;
 
-const Profile = tw.div`
-  flex items-center 
-`;
-
-const Name = tw.div`
-  mr-4 w-20 text-sm
-`;
-
-const UserImage = tw.img`
-  h-12 w-12 rounded-full border-gray-200 p-px cursor-pointer transform transform hover:scale-105 transition
-`;
-
-const ActionButtons = tw.div`
-  flex
-`;
-
-const ActionButton = tw.div`
-  bg-gray-200 flex flex-1 m-1 h-32 items-center flex-col justify-center rounded-lg transform transform hover:scale-105 transition text-xl cursor-pointer
-`;
-
-const ActionButtonImage = tw.img`
-  h-3/5
+const Title = tw.div`
+    text-5xl pt-4 text-gray-500
 `
 
-const InputButton = tw.div`
-  h-20 bg-gray-200 text-2xl p-4 flex items-center mt-8 rounded-lg
+const Driver = tw.img`
+ h-full object-contain mt-4
 `
