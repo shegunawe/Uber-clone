@@ -11,7 +11,7 @@ const Login = () => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        router.push("/");
+        router.push("/login");
       }
     });
   }, []);
